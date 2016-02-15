@@ -1,5 +1,7 @@
 <?php
 
+use App\Tweet;
+use App\User;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -11,11 +13,17 @@ class ViewAnotherUsersTweetsTest extends TestCase
      *
      * @return void
      */
+    use DatabaseMigrations;
     public function testViewingAnotherUserTweets()
     {
-        $user = factory(User::class)->create([]);
-        $tweet = factory(Tweet::class)->make([]);
-        $this->visit('/')
-            ->see('Laravel 5');
+
+
+        $user = factory(User::class)->create(['username'=>'johndoe']);
+        $tweet = factory(Tweet::class)->make(['body'=>'My first tweet']);
+
+        $user->tweets()->save($tweet);
+
+        $this->visit('/johndoe')
+            ->see('My first tweet');
     }
 }
